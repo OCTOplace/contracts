@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "eth-sig-util": "^3.0.1"
+  }
+}
