@@ -7,21 +7,13 @@
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+  const _tokenInstance = "0x9AA68D9652699654DA9589633023DeEB8A56f2b5";
+  const faucet = await hre.ethers.deployContract("contracts/Faucet.sol:Faucet", [_tokenInstance]);
 
-  const lockedAmount = hre.ethers.parseEther("0.001");
-
-  const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
-
-  await lock.waitForDeployment();
+  await faucet.waitForDeployment();
 
   console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
+    `Faucet Contract  for token ${_tokenInstance}  deployed to ${faucet.target}`
   );
 }
 
