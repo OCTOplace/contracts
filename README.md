@@ -37,7 +37,7 @@ If you want to contribute, deploy, or interact with the Octoplace contracts, fol
 
 ## Contract Descriptions
 
-[View Contract Documentation](https://github.com/OCTOPlace/contracts/docs/main.md)
+[View Contract Documentation on Confluence](https://octoplace.atlassian.net/wiki/spaces/Octoplace/pages/491521/Smart+Contracts)
 
 Feel free to explore the contracts in more detail by checking the respective source code files.
 
