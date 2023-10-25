@@ -2,14 +2,13 @@
 pragma solidity 0.8.17;
 
 import "./interfaces/ISwapData.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract SwapNFT is Context, AccessControl {
-    IERC20 private _feeToken;
+contract SwapNFT is Initializable, ContextUpgradeable, AccessControlUpgradeable {
+    IERC20Upgradeable private _feeToken;
     ISwapData private dataContract;
-
-    bool isInitialized;
 
     uint256 private totalBips = 10000;
     uint256 public txCharge = 10 * 10 ** 18;
@@ -43,7 +42,9 @@ contract SwapNFT is Context, AccessControl {
 
     address treasury;
 
-    constructor(address admin_, address dataContract_) {
+    function init(address admin_, address dataContract_) public initializer {
+        __Context_init();
+        __AccessControl_init();
         _grantRole(DEFAULT_ADMIN_ROLE, admin_);
         dataContract = ISwapData(dataContract_);
         treasury = _msgSender();
@@ -53,7 +54,7 @@ contract SwapNFT is Context, AccessControl {
         uint256 tokenId_,
         address nftContract_
     ) external payable {
-        IERC721 nftContract = IERC721(nftContract_);
+        IERC721Upgradeable nftContract = IERC721Upgradeable(nftContract_);
         bool isApproved = nftContract.isApprovedForAll(
             _msgSender(),
             address(this)
@@ -86,7 +87,7 @@ contract SwapNFT is Context, AccessControl {
         address nftContract_,
         uint256 listingId_
     ) external {
-        IERC721 nftContract = IERC721(nftContract_);
+        IERC721Upgradeable nftContract = IERC721Upgradeable(nftContract_);
         bool isApproved = nftContract.isApprovedForAll(
             _msgSender(),
             address(this)
@@ -102,7 +103,7 @@ contract SwapNFT is Context, AccessControl {
         ISwapData.SwapListing memory listing = dataContract.readListingById(
             listingId_
         );
-        IERC721 listingNftContract = IERC721(listing.tokenAddress);
+        IERC721Upgradeable listingNftContract = IERC721Upgradeable(listing.tokenAddress);
         require(
             listingNftContract.ownerOf(listing.tokenId) == listing.tokenOwner,
             "Listing Expired"
@@ -153,10 +154,10 @@ contract SwapNFT is Context, AccessControl {
         ISwapData.SwapListing memory listing = dataContract.readListingById(
             listingId_
         );
-        IERC721 offerContract = IERC721(offer.offerTokenAddress);
-        IERC721 listingContract = IERC721(offer.listingTokenAddress);
+        IERC721Upgradeable offerContract = IERC721Upgradeable(offer.offerTokenAddress);
+        IERC721Upgradeable listingContract = IERC721Upgradeable(offer.listingTokenAddress);
         require(offer.listingTokenId == listing.tokenId, "Incorrect listing");
-        IERC721 listingNftContract = IERC721(listing.tokenAddress);
+        IERC721Upgradeable listingNftContract = IERC721Upgradeable(listing.tokenAddress);
         require(
             listingNftContract.ownerOf(listing.tokenId) == _msgSender(),
             "You are not the owner of this listing"

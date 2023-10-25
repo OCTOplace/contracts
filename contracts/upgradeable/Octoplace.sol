@@ -1,27 +1,26 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/utils/Context.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/interfaces/IERC2981.sol";
+import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+
 interface IOwnable {
     function owner() external view  returns (address);
 }
 
-contract OctoplaceMarket is ReentrancyGuard {
-    using Counters for Counters.Counter;
-    Counters.Counter private _itemIds; // Id for each individual item
-    Counters.Counter private _itemsSold; // Number of items sold
+contract OctoplaceMarket is Initializable, ReentrancyGuardUpgradeable {
+    using CountersUpgradeable for CountersUpgradeable.Counter;
+    CountersUpgradeable.Counter private _itemIds; // Id for each individual item
+    CountersUpgradeable.Counter private _itemsSold; // Number of items sold
 
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
 
@@ -63,7 +62,9 @@ contract OctoplaceMarket is ReentrancyGuard {
     //    mapping NFT address to creators address
     mapping(address => Creator) private AddressToCreatorFeeItem;
 
-    constructor(address feeAddress_) {
+    function init(address feeAddress_) public initializer() {
+
+        __ReentrancyGuard_init();
         superAdmin = payable(msg.sender);
         feeAddress = payable(feeAddress_);
     }
@@ -221,7 +222,7 @@ contract OctoplaceMarket is ReentrancyGuard {
 
     /// Check EIP2981 supported contracts fro royalties
     function checkRoyalties(address _contract) internal view returns (bool) {
-        bool success = IERC165(_contract).supportsInterface(
+        bool success = IERC165Upgradeable(_contract).supportsInterface(
             _INTERFACE_ID_ERC2981
         );
         return success;
@@ -256,7 +257,7 @@ contract OctoplaceMarket is ReentrancyGuard {
             price,
             false
         );
-        IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+        IERC721Upgradeable(nftContract).transferFrom(msg.sender, address(this), tokenId);
         emit MarketItemCreated(
             itemId,
             nftContract,
@@ -336,7 +337,7 @@ contract OctoplaceMarket is ReentrancyGuard {
             require(success, "Transfer failed.");
         } else {
             if (checkRoyalties(addressNFT)) {
-                (address creatorAddr, uint256 royalityAmt) = IERC2981(
+                (address creatorAddr, uint256 royalityAmt) = IERC2981Upgradeable(
                     addressNFT
                 ).royaltyInfo(tokenId, msg.value);
                 (bool success, ) = payable(creatorAddr).call{
@@ -352,7 +353,7 @@ contract OctoplaceMarket is ReentrancyGuard {
         idToMarketItem[itemId].owner = payable(msg.sender);
         _itemsSold.increment();
 
-        IERC721(nftContract).transferFrom(address(this), msg.sender, tokenId);
+        IERC721Upgradeable(nftContract).transferFrom(address(this), msg.sender, tokenId);
 
         // Calculate Payouts
         uint256 feePayout = ((msg.value / 10000) *
@@ -405,7 +406,7 @@ contract OctoplaceMarket is ReentrancyGuard {
         idToMarketItem[itemId].price = 0;
         idToMarketItem[itemId].isSold = true;
         idToMarketItem[itemId].owner = payable(idToMarketItem[itemId].seller);
-        IERC721(nftContract).transferFrom(
+        IERC721Upgradeable(nftContract).transferFrom(
             address(this),
             idToMarketItem[itemId].seller,
             tokenId
@@ -437,7 +438,7 @@ contract OctoplaceMarket is ReentrancyGuard {
         idToMarketItem[itemId].price = 0;
         idToMarketItem[itemId].isSold = true;
         idToMarketItem[itemId].owner = payable(idToMarketItem[itemId].seller);
-        IERC721(nftContract).transferFrom(
+        IERC721Upgradeable(nftContract).transferFrom(
             address(this),
             idToMarketItem[itemId].seller,
             tokenId

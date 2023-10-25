@@ -1,9 +1,10 @@
-require("@nomicfoundation/hardhat-toolbox");
+require("@nomiclabs/hardhat-ethers");
+require('@openzeppelin/hardhat-upgrades');
+
 
 /** @type import('hardhat/config').HardhatUserConfig */
-const key = process.env.ETH_KEY;
 module.exports = {
-  defaultNetwork: "theta_privatenet",
+  defaultNetwork: "theta_mainnet",
   networks: {
     theta_privatenet: {
       url: "http://localhost:18888/rpc",
@@ -17,13 +18,13 @@ module.exports = {
     },
     theta_testnet: {
       url: `https://eth-rpc-api-testnet.thetatoken.org/rpc`,
-      accounts: [key],
+      accounts: ["1111111111111111111111111111111111111111111111111111111111111111"],
       chainId: 365,
       gasPrice: 4000000000000
     },
     theta_mainnet: {
-      url: `https://eth-rpc-api.thetatoken.org/rpc`,
-      accounts: [key],
+      url: `http://172.190.238.225:18888/rpc`,
+      accounts: [process.env.ETH_KEY],
       chainId: 361,
       gasPrice: 4000000000000
     },
@@ -33,7 +34,7 @@ module.exports = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200,
+        runs: 800,
       },
     },
   },

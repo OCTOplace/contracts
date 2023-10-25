@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 
 interface ISwapData {
     struct SwapListing {
         uint256 listingId;
-        IERC721 tokenAddress;
+        IERC721Upgradeable tokenAddress;
         uint256 tokenId;
         address tokenOwner;
         uint256 transactionChargeBips;
@@ -18,10 +18,10 @@ interface ISwapData {
     struct SwapOffer {
         uint256 offerId;
         uint256 listingId;
-        IERC721 offerTokenAddress;
+        IERC721Upgradeable offerTokenAddress;
         uint256 offerTokenId;
         address offerTokenOwner;
-        IERC721 listingTokenAddress;
+        IERC721Upgradeable listingTokenAddress;
         uint256 listingTokenId;
         address listingTokenOwner;
         uint256 transactionChargeBips;
