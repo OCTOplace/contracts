@@ -189,6 +189,26 @@ contract SwapData is AccessControl {
         return listings;
     }
 
+    function readListingsByIndex(
+        uint256 start,
+        uint256 end
+    ) external view returns (SwapListing[] memory list) {
+        require(end >= start, 'end should be bigger than start');
+        
+        uint256 lastIndex = _offerIdTracker.current() - 1;
+        uint256 i;
+        uint256 to = end;
+
+        if (start > lastIndex) return list;
+        if (end > lastIndex) to = length;
+
+        list = new SwapListing[](end - start + 1);
+        for (uint256 i = start; i <= end; i++) {
+            list[i - start] = _listings[i];
+        }
+        return list;
+    }
+
     function readAllOffers()
         external
         view
@@ -203,6 +223,26 @@ contract SwapData is AccessControl {
         return swapOffers;
     }
 
+    function readOffersByIndex(
+        uint256 start,
+        uint256 end
+    ) external view returns (SwapOffer[] memory list) {
+        require(end >= start, 'end should be bigger than start');
+        
+        uint256 lastIndex = _offerIdTracker.current() - 1;
+        uint256 i;
+        uint256 to = end;
+
+        if (start > lastIndex) return list;
+        if (end > lastIndex) to = length;
+
+        list = new SwapOffer[](end - start + 1);
+        for (uint256 i = start; i <= end; i++) {
+            list[i - start] = _offers[i];
+        }
+        return list;
+    }
+
     function readAllTrades()
         external
         view
@@ -213,6 +253,25 @@ contract SwapData is AccessControl {
             trades[i] = _trades[i + 1];
         }
         return trades;
+    }
+
+    function readTradesByIndex(
+        uint256 start,
+        uint256 end
+    ) external view returns (Trade[] memory list) {
+        require(end >= start, 'end should be bigger than start');
+        
+        uint256 lastIndex = _tradeIdTracker.current() - 1;
+        uint256 i;
+        uint256 to = end;
+
+        if (start > lastIndex) return list;
+        if (end > lastIndex) to = length;
+
+        list = new Trade[](to - start + 1);
+        for (i = start; i <= to; i++) {
+            list[i - start] = _trades[i];
+        }
     }
 
     function grantWriterRole(address to) external {
