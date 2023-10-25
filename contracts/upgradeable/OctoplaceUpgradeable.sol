@@ -17,7 +17,7 @@ interface IOwnable {
     function owner() external view  returns (address);
 }
 
-contract OctoplaceMarket is Initializable, ReentrancyGuardUpgradeable {
+contract OctoplaceMarketUpgradeable is Initializable, ReentrancyGuardUpgradeable {
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter private _itemIds; // Id for each individual item
     CountersUpgradeable.Counter private _itemsSold; // Number of items sold

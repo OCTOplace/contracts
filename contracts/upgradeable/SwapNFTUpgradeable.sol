@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract SwapNFT is Initializable, ContextUpgradeable, AccessControlUpgradeable {
+contract SwapNFTUpgradeable is Initializable, ContextUpgradeable, AccessControlUpgradeable {
     IERC20Upgradeable private _feeToken;
     ISwapData private dataContract;
 
