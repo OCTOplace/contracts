@@ -10,8 +10,8 @@ contract SwapNFTUpgradeable is Initializable, ContextUpgradeable, AccessControlU
     IERC20Upgradeable private _feeToken;
     ISwapData private dataContract;
 
-    uint256 private totalBips = 10000;
-    uint256 public txCharge = 10 * 10 ** 18;
+    uint256 private totalBips ;
+    uint256 public txCharge ;
 
     event SwapListingCreated(
         address collectionAddress,
@@ -47,6 +47,8 @@ contract SwapNFTUpgradeable is Initializable, ContextUpgradeable, AccessControlU
         __AccessControl_init();
         _grantRole(DEFAULT_ADMIN_ROLE, admin_);
         dataContract = ISwapData(dataContract_);
+        totalBips = 10000;
+        totalBips = 10 * 10 ** 18;
         treasury = _msgSender();
     }
 
