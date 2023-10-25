@@ -35,8 +35,8 @@ contract OctoplaceMarketUpgradeable is Initializable, ReentrancyGuardUpgradeable
 
     mapping(address => address) private contractOwners;
 
-    uint256 salesFeeBasisPoints = 400;
-    bool public listingIsActive = true;
+    uint256 salesFeeBasisPoints ;
+    bool public listingIsActive ;
 
     struct MarketItem {
         uint256 itemId;
@@ -67,6 +67,8 @@ contract OctoplaceMarketUpgradeable is Initializable, ReentrancyGuardUpgradeable
         __ReentrancyGuard_init();
         superAdmin = payable(msg.sender);
         feeAddress = payable(feeAddress_);
+        salesFeeBasisPoints= 400;
+        listingIsActive = true;
     }
 
     fallback() external payable {}
