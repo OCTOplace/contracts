@@ -7,11 +7,16 @@
 const hre = require("hardhat");
 
 async function main() {
-  const adminAddress = "0x9AA68D9652699654DA9589633023DeEB8A56f2b5";  // admin wallet address
-  const zeroAddress = "0x0000000000000000000000000000000000000000";  //zero address 
-
+  const adminAddress = "0xee69E72B0A1524329e6dD66D8c7e974D939e7690";  // admin wallet address
+  const zeroAddress = "0xee69E72B0A1524329e6dD66D8c7e974D939e7690";  //zero address 
+  const [deployer] = await ethers.getSigners();
+  console.log(
+    "Deploying the contracts with the account:",
+    await deployer.getAddress()
+  );
   // deploy data contract
-  const swapData = await hre.ethers.deployContract("contracts/SwapData.sol:SwapData", [adminAddress, zeroAddress]);
+  const SwapData = await hre.ethers.getContractFactory("contracts/SwapData.sol:SwapData");
+  const swapData = await SwapData.deploy(adminAddress,zeroAddress);
   await swapData.waitForDeployment();
   console.log(
     `Octoplace Swap Data Contract  with admin address ${adminAddress}  deployed to ${swapData.target}`
