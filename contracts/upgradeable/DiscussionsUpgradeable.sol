@@ -9,7 +9,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
  * @dev Simple on-chain storage for NFT commenting.
  * @author Omsify
  */
-contract NFTComments is Initializable, OwnableUpgradeable {
+contract NFTCommentsUpgradeables is Initializable, OwnableUpgradeable {
 
     IERC20Upgradeable public erc20Token;
     struct Comment {
